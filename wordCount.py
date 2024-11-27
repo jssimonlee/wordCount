@@ -18,21 +18,25 @@ def count_word_in_html_file(file_path, word):
 def count_word_in_folder(folder_path, word):
     """ 지정한 폴더에서 모든 HTML 파일을 확인하여 특정 단어의 총 출현 횟수를 계산하는 함수 """
     total_count = 0
+    global checkCount
+    checkCount = 0
     # 폴더 내의 모든 파일을 확인
     for root, dirs, files in os.walk(folder_path):
         for file in files:
-            if file.endswith('.htm') and (file.count('c00') or file.count('c010')):
+            if file.endswith('.htm'):
                 file_path = os.path.join(root, file)
                 word_count = count_word_in_html_file(file_path, word)
                 total_count += word_count
-                print(f"파일: {file}, 단어 '{word}' 등장 횟수: {word_count}")
+                checkCount += 1
+                if word_count > 0:
+                    print(file_path + str(checkCount) + f"파일: {file}, 단어 '{word}' 등장 횟수: {word_count}")
     return total_count
 
 # 예시 사용법
 # folder_path = "C:/example/folder"  # HTML 파일이 들어 있는 폴더 경로
-folder_path = r"C:\Users\종합PC2\Downloads"
+folder_path = r"C:\python\wordCount-main"
+checkCount = 0
 while(1):
     word = input()  # 찾고 싶은 단어
-
     total_word_count = count_word_in_folder(folder_path, word)
     print(f"\n총 단어 '{word}' 등장 횟수: {total_word_count}")
