@@ -23,9 +23,19 @@ def count_word_in_html_file(file_path, target_word):
                 word = target_word.split('-')
                 word_count = text.lower().count(word[0].lower().strip()) - text.lower().count(word[1].lower().strip())
             if word_count > 0:
-                volume = file_path.split("권")[0][-2:]
-                chapter = file_path.split("_r1")[0][-2:]
-                print(f"{volume}권 Ch{chapter} : {word_count}번 등장")
+                if file_path.count('권'):
+                    volume = file_path.split("권")[0][-6:] + '권'
+                else:
+                    volume = "_".join(file_path.split("\\")[-2:-1])
+                if file_path.count('_r1'):
+                    chapter = file_path.split("_r1")[0].split("c")[1]
+                elif file_path.count('Ch'):
+                    chapter = file_path.split("Ch")[-1].split('.')[0]
+                elif file_path.count('ch'):
+                    chapter = file_path.split("ch")[-1].split('.')[0]
+                else:
+                    chapter = file_path.split("\\")[-1].split('.')[0]
+                print(f"{volume} Ch {chapter} : {word_count}번 등장")
                 sentences = find_sentences_with_word_in_html(file_path, target_word)
                 for sen in sentences:
                     # print(sen.replace('“','').replace('”','').replace('\n','').strip() + '.')
@@ -44,7 +54,7 @@ def count_word_in_folder(folder_path, target_word):
     # 폴더 내의 모든 파일을 확인
     for root, dirs, files in os.walk(folder_path):
         for file in files:
-            if file.endswith('.htm') or file.endswith('.xhtml'):
+            if file.endswith('.htm') or file.endswith('.xhtml') or file.endswith('.html'):
                 file_path = os.path.join(root, file)
                 word_count = count_word_in_html_file(file_path, target_word)
                 total_count += word_count
@@ -82,8 +92,13 @@ def find_sentences_with_word_in_html(file_path, target_word):
 
 # 예시 사용법
 # folder_path = "C:/example/folder"  # HTML 파일이 들어 있는 폴더 경로
-folder_path = "./"
+# 현재 파일의 경로를 얻고, 디렉토리만 추출
+current_file_path = os.path.abspath(__file__)
+folder_path = os.path.dirname(current_file_path)
+print(folder_path)
 while(1):
+    print('\n\n\n')
+    print('='*50)
     word = input("\n찾고 싶은 단어를 입력하세요 : ")  # 찾고 싶은 단어
     print()
     total_word_count = count_word_in_folder(folder_path, word)
