@@ -1,5 +1,5 @@
 import os
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 import re
 import warnings
 
@@ -12,10 +12,12 @@ def count_word_in_html_file(file_path, target_word):
     """ 주어진 HTML 파일에서 특정 단어의 출현 횟수를 계산하는 함수 """
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
-            content = file.read()
+            # file안에 태그를 모두 제거 하였기 때문에 BeautifulSoup을 사용할 필요가 없다(전작업으로 deleteTag를 실행해야 한다)
+            text = file.read()
             # BeautifulSoup를 사용하여 HTML 태그를 제거한 텍스트만 추출
-            soup = BeautifulSoup(content, 'html.parser')
-            text = soup.get_text()
+            #soup = BeautifulSoup(content, 'html.parser')
+            #text = soup.get_text()
+            
             # 특정 단어의 등장 횟수 계산 (대소문자 구분 없음)
             if '-' not in target_word:
                 word_count = text.lower().count(target_word.lower())
@@ -68,11 +70,11 @@ def find_sentences_with_word_in_html(file_path, target_word):
     # HTML 파일 열기
     with open(file_path, 'r', encoding='utf-8') as file:
         # HTML 내용 읽기
-        content = file.read()
+        text = file.read()
         
         # BeautifulSoup을 사용하여 HTML 태그 제거
-        soup = BeautifulSoup(content, 'html')
-        text = soup.get_text()  # HTML 태그를 제거하고 텍스트만 추출
+        # soup = BeautifulSoup(content, 'html')
+        # text = soup.get_text()  # HTML 태그를 제거하고 텍스트만 추출
         
         # 문장을 정규 표현식으로 구분 (여기서는 마침표, 물음표, 느낌표 등을 기준으로 문장을 구분)
         sentences = re.split(r'[.!?]', text)
